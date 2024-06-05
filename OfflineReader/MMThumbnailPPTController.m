@@ -7,13 +7,13 @@
 //
 
 #import "MMThumbnailPPTController.h"
-
+#import <Masonry.h>
 @implementation MMThumbnailPPTController{
     // the webview we'll use to generate thumbnails
-    UIWebView *webView;
+    WKWebView *webView;
     // a uiview will help us hide the webview
     // while generation is going on
-    UIView* hidingView;
+//    UIView* hidingView;
 
     // maximum allowed size of thumbnails
     CGFloat maxThumbnailDimension;
@@ -24,17 +24,19 @@
     
     // scrollview to show image output
     UIScrollView* scrollView;
+    
+    NSMutableArray *imageArray;
 }
 
 - (id)init{
     if(self = [super init]){
         
-        hidingView = [[UIView alloc] initWithFrame:self.view.bounds];
-        hidingView.alpha = 0;
-        [self.view addSubview:hidingView];
+//        hidingView = [[UIView alloc] initWithFrame:self.view.bounds];
+//        hidingView.alpha = 0;
+//        [self.view addSubview:hidingView];
         
         loadPPTButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-        [loadPPTButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Tap to Generate Thumbnails" attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:40]}] forState:UIControlStateNormal];
+        [loadPPTButton setAttributedTitle:[[NSAttributedString alloc] initWithString:@"Tap to Generate Thumbnails" attributes:@{NSFontAttributeName : [UIFont systemFontOfSize:20]}] forState:UIControlStateNormal];
         [loadPPTButton sizeToFit];
         [loadPPTButton addTarget:self action:@selector(loadPPT:) forControlEvents:UIControlEventTouchUpInside];
         [self.view addSubview:loadPPTButton];
@@ -50,20 +52,22 @@
         status.textAlignment = NSTextAlignmentCenter;
         status.text = @"";
         status.font = [UIFont systemFontOfSize:20];
-        status.numberOfLines = 0;
-        [status sizeToFit];
-        fr = loadPPTButton.frame;
-        fr.size.width = self.view.bounds.size.width;
-        fr.origin.x = 0;
-        fr.origin.y = 80;
-        status.frame = fr;
         [self.view addSubview:status];
+
+        [status mas_makeConstraints:^(MASConstraintMaker *make) {
+            make.leading.equalTo(@(20));
+            make.trailing.equalTo(@(-20));
+            make.top.equalTo(@80);
+        }];
+
         
         scrollView = [[UIScrollView alloc] initWithFrame:CGRectMake(0, 120, self.view.bounds.size.width, self.view.bounds.size.height - 120)];
         [self.view addSubview:scrollView];
         
         
         maxThumbnailDimension = 300;
+        
+        imageArray = [NSMutableArray array];
     }
     return self;
 }
@@ -89,113 +93,138 @@
     NSURLRequest *requestObj = [NSURLRequest requestWithURL:url];
     [webView removeFromSuperview];
     
-    webView = [[UIWebView alloc] initWithFrame:self.view.bounds];
-    webView.delegate = self;
-    webView.scalesPageToFit = YES;
-    webView.scrollView.minimumZoomScale = 0;
-    webView.scrollView.maximumZoomScale = 1;
-    [hidingView addSubview:webView];
+    webView = [[WKWebView alloc] initWithFrame:self.view.bounds];
+    webView.navigationDelegate = self;
+    webView.scrollView.scrollEnabled = YES;
+    webView.scrollView.delegate = self;
+//    webView.scrollView.minimumZoomScale = 0;
+//    webView.scrollView.maximumZoomScale = 1;
+//    [hidingView addSubview:webView];
+    [self.view addSubview:webView];
     
     [webView setUserInteractionEnabled:YES];
     [webView loadRequest:requestObj];
 }
 
-#pragma mark - UIWebViewDelegate
+#pragma mark - WKWebViewDelegate
+- (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
+        [webView evaluateJavaScript:@"document.body.innerHTML" completionHandler:^(id _Nullable html, NSError * _Nullable error) {
+            NSLog(@"html:\n%@", html);
+        }];
 
-- (void)webViewDidFinishLoad:(UIWebView *)_webView{
-    
-    // show that UIWebView transforms ppt into html.
-    // here is the raw html if you want to do anything else,
-    // like text search / modify it / change slide order / etc
-    NSString* html = [webView stringByEvaluatingJavaScriptFromString:@"document.body.innerHTML"];
-    NSLog(@"html:\n%@", html);
-    
-    // start generating thumbnails at the first slide
-    [self generateThumbnailForAllSlides];
-    
-    [webView removeFromSuperview];
-    webView = nil;
+    [self generateSnapshotForAllSlides];
+
+//    [webView removeFromSuperview];
+//    webView = nil;
 }
 
--(void) webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error{
+- (void)webView:(WKWebView *)webView didFailNavigation:(WKNavigation *)navigation withError:(NSError *)error {
     NSLog(@"error: %@", error);
-}
 
+}
 
 #pragma mark - Helper Methods
 
--(void) generateThumbnailForAllSlides{
-    // first, find out how many slides there are
-    // and if we're asking for an existing slide
-    int slideCount = [[webView stringByEvaluatingJavaScriptFromString:@"document.getElementsByClassName('slide').length"] intValue];
-    
-    // now loop though all slides, and generate a thumbnail
-    // for each one.
-    //
-    // for this sample code, we just save them to the documents
-    // folder, but it generates a UIImage per slide so they could
-    // easily be used pretty much anywhere
-    for(int slideIndex = 0; slideIndex < slideCount; slideIndex++){
-        @autoreleasepool {
-            NSLog(@"generating: %i", slideIndex);
-            // now find the dimensions of that slide
-            int height = [[webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.getElementsByClassName('slide')[%d].style.height", slideIndex]] intValue];
-            int width= [[webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.getElementsByClassName('slide')[%d].style.width", slideIndex]] intValue];
-            
-            // set the webview to be the same ratio of dimensions
-            // as the slide, with our maximum dimension as our input.
-            //
-            // this way, we will only generate thumbnails that are less
-            // then or equal to maxThumbnailDimension in width and height
-            CGRect bounds = webView.bounds;
-            CGFloat scale = 1;
-            if(width > height){
-                bounds.size.width = maxThumbnailDimension;
-                bounds.size.height = (float)height / (float)width * maxThumbnailDimension;
-                scale = maxThumbnailDimension / width;
-            }else{
-                scale = bounds.size.width / bounds.size.height;
-                bounds.size.width = (float)width / (float)height * maxThumbnailDimension;
-                bounds.size.height = maxThumbnailDimension;
-                scale = maxThumbnailDimension / height;
-            }
-            webView.bounds = bounds;
-            
-            // next, find out how far down in the webview this slide is
-            // and scroll to it
-            int offset = [[webView stringByEvaluatingJavaScriptFromString:[NSString stringWithFormat:@"document.getElementsByClassName('slide')[%d].offsetTop", slideIndex]] intValue];
-            CGPoint so = webView.scrollView.contentOffset;
-            so.y = offset * scale;
-            webView.scrollView.contentOffset = so;
-            
-            // now that the webview's bounds are exactly the same size
-            // then save the webview as a PNG image of the slide
-            UIGraphicsBeginImageContext(bounds.size);
-            [webView.layer renderInContext:UIGraphicsGetCurrentContext()];
-            UIImage *slideThumbnailImage = UIGraphicsGetImageFromCurrentImageContext();
-            UIGraphicsEndImageContext();
-            
-            // save the slide to our Documents directory.
-            // you can verify the output in Xcode's Organizer,
-            // or by modifying the project to show UIImageViews
-            // or however you like
-            NSString* filename = [NSString stringWithFormat:@"slide%i.png", slideIndex];
-            NSArray *documentsPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-            NSString *outputImagePath = [[documentsPaths objectAtIndex:0] stringByAppendingPathComponent:filename];
-            [UIImagePNGRepresentation(slideThumbnailImage) writeToFile:outputImagePath atomically:YES];
-            
-            
-            CGFloat x = 34 + slideIndex % 2 * 350;
-            CGFloat y = floorf(slideIndex / 2) * 310;
-            UIImageView* imgView = [[UIImageView alloc] initWithFrame:CGRectMake(x, y, 300, 300)];
-            imgView.contentMode = UIViewContentModeCenter;
-            imgView.image = slideThumbnailImage;
-            [scrollView addSubview:imgView];
-        }
-    }
-
-    scrollView.contentSize = CGSizeMake(MAX(768,self.view.bounds.size.width), (floorf(slideCount / 2)+1) * 300);
-    status.text = [NSString stringWithFormat:@"Generated %i thumbnails", slideCount];
+- (UIImage *)screenshotWebview {
+    UIGraphicsBeginImageContextWithOptions(webView.bounds.size, YES, 0.0);
+    [webView drawViewHierarchyInRect:webView.bounds afterScreenUpdates:YES];
+    UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return image;
 }
+
+- (void)generateSnapshotForAllSlides {
+    // 获取slide数量
+    NSString *js = @"document.getElementsByClassName('slide').length";
+
+    [webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        int slideCount = [result intValue];
+        if (slideCount == 0) return;
+        NSLog(@"slidecount = %d",slideCount);
+        [self snapshotFromSlideIndex:0 totalSlides:slideCount currentSlideTop:0];
+    }];
+}
+
+- (void)snapshotFromSlideIndex:(int)slideIndex totalSlides:(int)totalSlides currentSlideTop:(CGFloat)currentSlideTop {
+    NSString *js = [NSString stringWithFormat:
+                    @"(function() {"
+                    "  let slideElement = document.getElementsByClassName('slide')[%d];"
+                    "  let rect = slideElement.getBoundingClientRect();"
+                    "  return {width: rect.width, height: rect.height};"
+                    "})()", slideIndex];
+    // 获取当前slide的宽和高
+    [webView evaluateJavaScript:js completionHandler:^(id _Nullable result, NSError * _Nullable error) {
+        if (error) {
+            NSLog(@"Error: %@", error);
+            return;
+        }
+        CGFloat width = [result[@"width"] floatValue];
+        CGFloat height = [result[@"height"] floatValue];
+        CGRect bounds = webView.bounds;
+        CGFloat scale = 1;
+        if(width > height){
+            bounds.size.width = maxThumbnailDimension;
+            bounds.size.height = height / width * maxThumbnailDimension;
+            scale = maxThumbnailDimension / width;
+        }else{
+            scale = bounds.size.width / bounds.size.height;
+            bounds.size.width = (float)width / (float)height * maxThumbnailDimension;
+            bounds.size.height = maxThumbnailDimension;
+            scale = maxThumbnailDimension / height;
+        }
+        // 改变webview的大小
+        webView.bounds = bounds;
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ // 给0.1s刷新UI的时间
+            [self snapshotForSlideAtIndex:slideIndex top:currentSlideTop  completionHandler:^(UIImage * _Nullable image) {
+                if (image) {
+                    [imageArray addObject:image];
+                }
+
+                if (imageArray.count == totalSlides) {
+                    NSLog(@"All slide snapshots are generated.");
+
+                    for (int slideIndex = 0; slideIndex < imageArray.count; slideIndex++) {
+                        NSString* filename = [NSString stringWithFormat:@"slide%i.png", slideIndex];
+                        NSArray *documentsPaths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+                        NSString *outputImagePath = [[documentsPaths objectAtIndex:0] stringByAppendingPathComponent:filename];
+                        UIImage *image = imageArray[slideIndex];
+                        [UIImagePNGRepresentation(image) writeToFile:outputImagePath atomically:YES];
+                        
+                        CGFloat x = 34 + slideIndex % 2 * 350;
+                        CGFloat y = floorf(slideIndex / 2) * 310;
+                        UIImageView* imgView = [[UIImageView alloc] initWithFrame:CGRectMake(x, y, 300, 300)];
+                        imgView.contentMode = UIViewContentModeScaleAspectFit;
+                        imgView.image = image;
+                        [scrollView addSubview:imgView];
+                        int totalSlides = 14;
+                        scrollView.contentSize = CGSizeMake(MAX(768,self.view.bounds.size.width), (floorf(totalSlides / 2)+1) * 300);
+                        status.text = [NSString stringWithFormat:@"Generated %i thumbnails", totalSlides];
+                    }
+                    
+
+                } else if (slideIndex < totalSlides - 1) {
+                    NSLog(@"调用下一次,slideindex: %d", slideIndex + 1);
+                    [self snapshotFromSlideIndex:slideIndex + 1 totalSlides:totalSlides currentSlideTop:currentSlideTop + bounds.size.height];
+                }
+            }];
+        });
+    }];
+}
+
+
+- (void)snapshotForSlideAtIndex:(int)slideIndex top:(CGFloat)top completionHandler:(void(^)( UIImage * _Nullable image))completionHandler {
+//    int offset = webView.bounds.size.height * slideIndex;
+    
+    // 滚动到offset
+    webView.scrollView.contentOffset = CGPointMake(0, top);
+    // 等待webview渲染好当前页面
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        // 截图
+        UIImage *slideThumbnailImage = [self screenshotWebview];
+        completionHandler(slideThumbnailImage);
+    });
+}
+
+
 
 @end

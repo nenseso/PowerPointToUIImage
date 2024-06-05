@@ -3,10 +3,11 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		58B7C2CFB418AB9730A59BCE /* Pods_PowerPointThumb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A9EEE4DC4808AC9940B13D3C /* Pods_PowerPointThumb.framework */; };
 		66E716C7193675BB00548491 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E716C6193675BB00548491 /* Foundation.framework */; };
 		66E716C9193675BB00548491 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E716C8193675BB00548491 /* CoreGraphics.framework */; };
 		66E716CB193675BB00548491 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 66E716CA193675BB00548491 /* UIKit.framework */; };
@@ -16,9 +17,11 @@
 		66E716DD193675BB00548491 /* MMThumbnailPPTController.m in Sources */ = {isa = PBXBuildFile; fileRef = 66E716DC193675BB00548491 /* MMThumbnailPPTController.m */; };
 		66E716DF193675BB00548491 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 66E716DE193675BB00548491 /* Images.xcassets */; };
 		66E7170F1936FBEB00548491 /* WorstPresentationEverStandAlone.ppt in Resources */ = {isa = PBXBuildFile; fileRef = 66E7170E1936FBC300548491 /* WorstPresentationEverStandAlone.ppt */; };
+		85E7590A2C0EEEE800EEAC19 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 85E759092C0EEEE800EEAC19 /* Launch Screen.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		19C59A6E4DBF4FBF43874885 /* Pods-PowerPointThumb.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PowerPointThumb.debug.xcconfig"; path = "Target Support Files/Pods-PowerPointThumb/Pods-PowerPointThumb.debug.xcconfig"; sourceTree = "<group>"; };
 		66E716C3193675BB00548491 /* PowerPointThumb.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PowerPointThumb.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		66E716C6193675BB00548491 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		66E716C8193675BB00548491 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -33,6 +36,9 @@
 		66E716DC193675BB00548491 /* MMThumbnailPPTController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MMThumbnailPPTController.m; sourceTree = "<group>"; };
 		66E716DE193675BB00548491 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		66E7170E1936FBC300548491 /* WorstPresentationEverStandAlone.ppt */ = {isa = PBXFileReference; lastKnownFileType = file; path = WorstPresentationEverStandAlone.ppt; sourceTree = "<group>"; };
+		6DC8FF68F68B1F13091B668E /* Pods-PowerPointThumb.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PowerPointThumb.release.xcconfig"; path = "Target Support Files/Pods-PowerPointThumb/Pods-PowerPointThumb.release.xcconfig"; sourceTree = "<group>"; };
+		85E759092C0EEEE800EEAC19 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		A9EEE4DC4808AC9940B13D3C /* Pods_PowerPointThumb.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PowerPointThumb.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,18 +49,29 @@
 				66E716C9193675BB00548491 /* CoreGraphics.framework in Frameworks */,
 				66E716CB193675BB00548491 /* UIKit.framework in Frameworks */,
 				66E716C7193675BB00548491 /* Foundation.framework in Frameworks */,
+				58B7C2CFB418AB9730A59BCE /* Pods_PowerPointThumb.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		278513C2AE9600CD40037AAA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				19C59A6E4DBF4FBF43874885 /* Pods-PowerPointThumb.debug.xcconfig */,
+				6DC8FF68F68B1F13091B668E /* Pods-PowerPointThumb.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		66E716BA193675BB00548491 = {
 			isa = PBXGroup;
 			children = (
 				66E716CC193675BB00548491 /* PowerPointThumb */,
 				66E716C5193675BB00548491 /* Frameworks */,
 				66E716C4193675BB00548491 /* Products */,
+				278513C2AE9600CD40037AAA /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -72,6 +89,7 @@
 				66E716C6193675BB00548491 /* Foundation.framework */,
 				66E716C8193675BB00548491 /* CoreGraphics.framework */,
 				66E716CA193675BB00548491 /* UIKit.framework */,
+				A9EEE4DC4808AC9940B13D3C /* Pods_PowerPointThumb.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -83,6 +101,7 @@
 				66E716D6193675BB00548491 /* MMAppDelegate.m */,
 				66E716DB193675BB00548491 /* MMThumbnailPPTController.h */,
 				66E716DC193675BB00548491 /* MMThumbnailPPTController.m */,
+				85E759092C0EEEE800EEAC19 /* Launch Screen.storyboard */,
 				66E716DE193675BB00548491 /* Images.xcassets */,
 				66E716CD193675BB00548491 /* Supporting Files */,
 			);
@@ -109,9 +128,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 66E716F5193675BB00548491 /* Build configuration list for PBXNativeTarget "PowerPointThumb" */;
 			buildPhases = (
+				7ECFE4220A05F9D337778E1F /* [CP] Check Pods Manifest.lock */,
 				66E716BF193675BB00548491 /* Sources */,
 				66E716C0193675BB00548491 /* Frameworks */,
 				66E716C1193675BB00548491 /* Resources */,
+				938FEBB06B332B16764FD50D /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -131,17 +152,13 @@
 				CLASSPREFIX = MM;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Adam Wulf";
-				TargetAttributes = {
-					66E716C2193675BB00548491 = {
-						DevelopmentTeam = MU27A4SCKC;
-					};
-				};
 			};
 			buildConfigurationList = 66E716BE193675BB00548491 /* Build configuration list for PBXProject "PowerPointThumb" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -162,11 +179,54 @@
 			files = (
 				66E716DF193675BB00548491 /* Images.xcassets in Resources */,
 				66E7170F1936FBEB00548491 /* WorstPresentationEverStandAlone.ppt in Resources */,
+				85E7590A2C0EEEE800EEAC19 /* Launch Screen.storyboard in Resources */,
 				66E716D1193675BB00548491 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		7ECFE4220A05F9D337778E1F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-PowerPointThumb-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		938FEBB06B332B16764FD50D /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PowerPointThumb/Pods-PowerPointThumb-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PowerPointThumb/Pods-PowerPointThumb-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PowerPointThumb/Pods-PowerPointThumb-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		66E716BF193675BB00548491 /* Sources */ = {
@@ -225,6 +285,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
@@ -257,6 +318,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = 2;
 				VALIDATE_PRODUCT = YES;
@@ -265,13 +327,15 @@
 		};
 		66E716F6193675BB00548491 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 19C59A6E4DBF4FBF43874885 /* Pods-PowerPointThumb.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				DEVELOPMENT_TEAM = MU27A4SCKC;
+				DEVELOPMENT_TEAM = 8QKRE7L6N9;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OfflineReader/PowerPointThumb-Prefix.pch";
 				INFOPLIST_FILE = "OfflineReader/PowerPointThumb-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				PRODUCT_NAME = PowerPointThumb;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;
@@ -280,13 +344,15 @@
 		};
 		66E716F7193675BB00548491 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6DC8FF68F68B1F13091B668E /* Pods-PowerPointThumb.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
-				DEVELOPMENT_TEAM = MU27A4SCKC;
+				DEVELOPMENT_TEAM = 8QKRE7L6N9;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OfflineReader/PowerPointThumb-Prefix.pch";
 				INFOPLIST_FILE = "OfflineReader/PowerPointThumb-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				PRODUCT_NAME = PowerPointThumb;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				WRAPPER_EXTENSION = app;

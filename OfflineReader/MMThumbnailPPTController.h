@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <WebKit/WebKit.h>
 
-@interface MMThumbnailPPTController : UIViewController<UIWebViewDelegate>
+@interface MMThumbnailPPTController : UIViewController<WKNavigationDelegate, UIScrollViewDelegate>
 
 -(void)generateThumbnailsForFile:(NSURL *)url;
 
